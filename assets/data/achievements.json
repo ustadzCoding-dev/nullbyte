@@ -1,0 +1,272 @@
+[
+  {
+    "id": "ach_first_blood",
+    "title": "First Blood",
+    "description": "Selesaikan level pertamamu. Selamat datang di dunia hacking!",
+    "isSecret": false,
+    "conditionType": "level_complete",
+    "conditionValue": 1,
+    "bonusPoints": 50
+  },
+  {
+    "id": "ach_no_hint_1",
+    "title": "Ghost Protocol",
+    "description": "Selesaikan sebuah level tanpa menggunakan hint apapun.",
+    "isSecret": false,
+    "conditionType": "no_hint_clear",
+    "conditionValue": 1,
+    "bonusPoints": 100
+  },
+  {
+    "id": "ach_speed_1",
+    "title": "Speed Demon",
+    "description": "Selesaikan sebuah level dalam waktu kurang dari 3 menit.",
+    "isSecret": false,
+    "conditionType": "speed_clear",
+    "conditionValue": 180,
+    "bonusPoints": 150
+  },
+  {
+    "id": "ach_mission_1_complete",
+    "title": "Network Phantom",
+    "description": "Selesaikan semua level di Mission 1: Network Scanning.",
+    "isSecret": false,
+    "conditionType": "mission_complete",
+    "conditionValue": 1,
+    "bonusPoints": 300
+  },
+  {
+    "id": "ach_mission_2_complete",
+    "title": "Web Wraith",
+    "description": "Selesaikan semua level di Mission 2: Web Exploitation.",
+    "isSecret": false,
+    "conditionType": "mission_complete",
+    "conditionValue": 2,
+    "bonusPoints": 400
+  },
+  {
+    "id": "ach_mission_3_complete",
+    "title": "Cipher Breaker",
+    "description": "Selesaikan semua level di Mission 3: Password Cracking.",
+    "isSecret": false,
+    "conditionType": "mission_complete",
+    "conditionValue": 3,
+    "bonusPoints": 400
+  },
+  {
+    "id": "ach_all_missions",
+    "title": "NULLBYTE Master",
+    "description": "Selesaikan semua mission yang tersedia. Kamu adalah operator elite.",
+    "isSecret": false,
+    "conditionType": "all_missions_complete",
+    "conditionValue": 3,
+    "bonusPoints": 1000
+  },
+  {
+    "id": "ach_no_hint_5",
+    "title": "Silent Operator",
+    "description": "Selesaikan 5 level berturut-turut tanpa menggunakan hint.",
+    "isSecret": false,
+    "conditionType": "no_hint_streak",
+    "conditionValue": 5,
+    "bonusPoints": 250
+  },
+  {
+    "id": "ach_all_tools",
+    "title": "Arsenal Master",
+    "description": "Gunakan semua tool yang tersedia setidaknya sekali.",
+    "isSecret": false,
+    "conditionType": "all_tools_used",
+    "conditionValue": 10,
+    "bonusPoints": 200
+  },
+  {
+    "id": "ach_speed_5",
+    "title": "Lightning Hacker",
+    "description": "Selesaikan 5 level masing-masing dalam waktu kurang dari 5 menit.",
+    "isSecret": false,
+    "conditionType": "speed_clear_count",
+    "conditionValue": 5,
+    "bonusPoints": 300
+  },
+  {
+    "id": "ach_difficulty_3",
+    "title": "Threat Actor",
+    "description": "Selesaikan level dengan difficulty 3 untuk pertama kalinya.",
+    "isSecret": false,
+    "conditionType": "difficulty_clear",
+    "conditionValue": 3,
+    "bonusPoints": 200
+  },
+  {
+    "id": "ach_difficulty_4",
+    "title": "Advanced Persistent",
+    "description": "Selesaikan level dengan difficulty 4. Kamu bukan pemula lagi.",
+    "isSecret": false,
+    "conditionType": "difficulty_clear",
+    "conditionValue": 4,
+    "bonusPoints": 350
+  },
+  {
+    "id": "ach_perfect_score",
+    "title": "Zero Defect",
+    "description": "Raih skor sempurna di sebuah level (tanpa hint, tanpa kesalahan, dalam waktu cepat).",
+    "isSecret": false,
+    "conditionType": "perfect_level",
+    "conditionValue": 1,
+    "bonusPoints": 500
+  },
+  {
+    "id": "ach_login_streak_7",
+    "title": "Dedicated Operator",
+    "description": "Login dan bermain selama 7 hari berturut-turut.",
+    "isSecret": false,
+    "conditionType": "login_streak",
+    "conditionValue": 7,
+    "bonusPoints": 150
+  },
+  {
+    "id": "ach_total_points_1000",
+    "title": "Point Collector",
+    "description": "Kumpulkan total 1000 poin dari semua level.",
+    "isSecret": false,
+    "conditionType": "total_points",
+    "conditionValue": 1000,
+    "bonusPoints": 100
+  },
+  {
+    "id": "ach_total_points_5000",
+    "title": "Elite Hacker",
+    "description": "Kumpulkan total 5000 poin. Kamu adalah ancaman nyata.",
+    "isSecret": false,
+    "conditionType": "total_points",
+    "conditionValue": 5000,
+    "bonusPoints": 500
+  },
+  {
+    "id": "ach_hint_level3",
+    "title": "Last Resort",
+    "description": "Gunakan hint level 3 (near-solution) untuk pertama kalinya.",
+    "isSecret": false,
+    "conditionType": "hint_used",
+    "conditionValue": 3,
+    "bonusPoints": 0
+  },
+  {
+    "id": "ach_tool_upgrade",
+    "title": "Gear Up",
+    "description": "Upgrade sebuah tool ke level 2.",
+    "isSecret": false,
+    "conditionType": "tool_upgrade",
+    "conditionValue": 2,
+    "bonusPoints": 75
+  },
+  {
+    "id": "ach_network_expert",
+    "title": "Network Cartographer",
+    "description": "Selesaikan semua level domain Network dengan rata-rata skor di atas 80%.",
+    "isSecret": false,
+    "conditionType": "domain_mastery",
+    "conditionValue": 1,
+    "bonusPoints": 350
+  },
+  {
+    "id": "ach_web_expert",
+    "title": "Web Infiltrator",
+    "description": "Selesaikan semua level domain Web dengan rata-rata skor di atas 80%.",
+    "isSecret": false,
+    "conditionType": "domain_mastery",
+    "conditionValue": 2,
+    "bonusPoints": 350
+  },
+  {
+    "id": "ach_secret_easter_egg",
+    "title": "???",
+    "description": "Kamu menemukan sesuatu yang tersembunyi...",
+    "isSecret": true,
+    "conditionType": "easter_egg",
+    "conditionValue": 1,
+    "bonusPoints": 999
+  },
+  {
+    "id": "ach_secret_speedrun",
+    "title": "Speedrunner",
+    "description": "Selesaikan seluruh Mission 1 dalam waktu kurang dari 15 menit.",
+    "isSecret": true,
+    "conditionType": "mission_speed_clear",
+    "conditionValue": 900,
+    "bonusPoints": 750
+  },
+  {
+    "id": "ach_secret_no_hint_mission",
+    "title": "Pure Skill",
+    "description": "Selesaikan sebuah mission penuh tanpa menggunakan hint satupun.",
+    "isSecret": true,
+    "conditionType": "mission_no_hint",
+    "conditionValue": 1,
+    "bonusPoints": 600
+  },
+  {
+    "id": "ach_secret_all_perfect",
+    "title": "Flawless Victory",
+    "description": "Raih skor sempurna di semua level dalam satu mission.",
+    "isSecret": true,
+    "conditionType": "mission_perfect",
+    "conditionValue": 1,
+    "bonusPoints": 1500
+  },
+  {
+    "id": "ach_secret_night_owl",
+    "title": "Night Owl",
+    "description": "Bermain antara pukul 00:00 - 04:00 sebanyak 5 kali.",
+    "isSecret": true,
+    "conditionType": "play_at_night",
+    "conditionValue": 5,
+    "bonusPoints": 200
+  },
+  {
+    "id": "ach_secret_comeback",
+    "title": "Comeback Kid",
+    "description": "Gagal sebuah level 3 kali lalu berhasil menyelesaikannya.",
+    "isSecret": true,
+    "conditionType": "comeback_win",
+    "conditionValue": 3,
+    "bonusPoints": 300
+  },
+  {
+    "id": "ach_level_10",
+    "title": "Veteran Operator",
+    "description": "Selesaikan 10 level secara total.",
+    "isSecret": false,
+    "conditionType": "total_levels_complete",
+    "conditionValue": 10,
+    "bonusPoints": 200
+  },
+  {
+    "id": "ach_level_15",
+    "title": "Seasoned Hacker",
+    "description": "Selesaikan 15 level secara total. Kamu sudah melihat segalanya.",
+    "isSecret": false,
+    "conditionType": "total_levels_complete",
+    "conditionValue": 15,
+    "bonusPoints": 400
+  },
+  {
+    "id": "ach_secret_dictionary",
+    "title": "Lexicographer",
+    "description": "Baca 50 entri di Cybersecurity Dictionary.",
+    "isSecret": true,
+    "conditionType": "dictionary_read",
+    "conditionValue": 50,
+    "bonusPoints": 150
+  },
+  {
+    "id": "ach_secret_tool_collector",
+    "title": "Tool Hoarder",
+    "description": "Unlock semua tool yang tersedia di inventory.",
+    "isSecret": true,
+    "conditionType": "all_tools_unlocked",
+    "conditionValue": 10,
+    "bonusPoints": 500
+  }
+]

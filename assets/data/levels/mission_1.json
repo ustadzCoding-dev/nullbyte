@@ -1,0 +1,437 @@
+{
+  "missionId": "mission_1",
+  "missionTitle": "Network Recon",
+  "domain": "network",
+  "levels": [
+    {
+      "id": "m1_l1",
+      "missionId": "mission_1",
+      "title": "Host Discovery",
+      "narrative": "Mission pembuka dimulai di sini. Anda baru masuk ke lab target dan tugas pertama adalah memetakan host yang benar-benar hidup di subnet 192.168.1.0/24. Fokus level ini sederhana: pahami alur ping sweep, identifikasi target utama, lalu ambil flag awal dari service web yang terbuka.",
+      "domain": "network",
+      "difficulty": 1,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 80, "y": 200 }
+          },
+          {
+            "id": "node_router",
+            "label": "Gateway Router",
+            "type": "router",
+            "ip": "192.168.1.1",
+            "openPorts": [80, 443, 22],
+            "services": ["HTTP", "HTTPS", "SSH"],
+            "position": { "x": 300, "y": 200 }
+          },
+          {
+            "id": "node_target",
+            "label": "Corp Server",
+            "type": "server",
+            "ip": "192.168.1.10",
+            "openPorts": [22, 80],
+            "services": ["SSH", "HTTP"],
+            "position": { "x": 520, "y": 200 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_router" },
+          { "sourceId": "node_router", "targetId": "node_target" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Jalankan host discovery pada subnet 192.168.1.0/24 untuk mengetahui host yang aktif",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Identifikasi alamat IP Corp Server sebagai target utama reconnaissance",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Akses service web target dan temukan flag awal dari file yang terekspos",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "f18151d93d0825dacb00dab3487f56336fe0872c86ae430806ce784d52faba94",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Mulai dengan host discovery, bukan full port scan. Gunakan nmap -sn pada seluruh subnet."
+        },
+        {
+          "level": 2,
+          "text": "Perintah inti: nmap -sn 192.168.1.0/24. Catat host yang merespons lalu fokus ke server 192.168.1.10."
+        },
+        {
+          "level": 3,
+          "text": "Setelah target ditemukan, enumerasi service HTTP dengan curl dan baca file flag yang terekspos."
+        }
+      ],
+      "expectedCommandPath": [
+        "nmap -sn 192.168.1.0/24",
+        "nmap 192.168.1.10",
+        "curl http://192.168.1.10/flag.txt"
+      ],
+      "realWorldContext": "Host discovery adalah langkah pertama dalam network reconnaissance. Tim pentest menggunakan ping sweep atau nmap -sn untuk membedakan host aktif dari noise jaringan sebelum lanjut ke enumerasi yang lebih dalam.",
+      "recommendedTools": ["nmap", "ping", "curl"]
+    },
+    {
+      "id": "m1_l2",
+      "missionId": "mission_1",
+      "title": "Port Scan",
+      "narrative": "Setelah mengetahui host yang aktif, Anda perlu memetakan port terbuka pada workstation yang tampak tidak biasa. Fokus level ini adalah mengenali layanan di port non-standar dan memastikan jalur masuk yang paling menarik untuk tahap berikutnya.",
+      "domain": "network",
+      "difficulty": 1,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 80, "y": 200 }
+          },
+          {
+            "id": "node_firewall",
+            "label": "Firewall",
+            "type": "firewall",
+            "ip": "192.168.2.1",
+            "openPorts": [443],
+            "services": ["HTTPS"],
+            "position": { "x": 300, "y": 200 }
+          },
+          {
+            "id": "node_workstation_1",
+            "label": "Workstation A",
+            "type": "workstation",
+            "ip": "192.168.2.10",
+            "openPorts": [135, 139, 445],
+            "services": ["RPC", "NetBIOS", "SMB"],
+            "position": { "x": 500, "y": 100 }
+          },
+          {
+            "id": "node_workstation_2",
+            "label": "Workstation B",
+            "type": "workstation",
+            "ip": "192.168.2.11",
+            "openPorts": [8080, 8443],
+            "services": ["HTTP-Alt", "HTTPS-Alt"],
+            "position": { "x": 500, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_firewall" },
+          { "sourceId": "node_firewall", "targetId": "node_workstation_1" },
+          { "sourceId": "node_firewall", "targetId": "node_workstation_2" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Konfirmasi host aktif pada subnet 192.168.2.0/24",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Lakukan port scan penuh ke Workstation B untuk menemukan service di port non-standar",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Validasi service HTTP-Alt di port 8080 dan ambil flag dari endpoint tersembunyi",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "72534f2cea7256a3831be36f0e68a1511d0e986f643f993f71a5f2c2d658b4d1",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Pastikan dulu host mana yang aktif. Setelah itu baru jalankan full port scan ke host yang menarik."
+        },
+        {
+          "level": 2,
+          "text": "Gunakan nmap -p- 192.168.2.11 untuk membuka semua port TCP, termasuk 8080 dan 8443."
+        },
+        {
+          "level": 3,
+          "text": "Port 8080 menjalankan HTTP alternatif. Gunakan curl ke endpoint /secret untuk mengambil flag."
+        }
+      ],
+      "expectedCommandPath": [
+        "nmap -sn 192.168.2.0/24",
+        "nmap -p- 192.168.2.11",
+        "curl http://192.168.2.11:8080/secret"
+      ],
+      "realWorldContext": "Port scan membantu operator memutuskan attack surface mana yang paling bernilai. Port non-standar sering dipakai untuk admin panel, staging service, atau layanan yang sengaja disamarkan dari monitoring dasar.",
+      "recommendedTools": ["nmap", "curl"]
+    },
+    {
+      "id": "m1_l3",
+      "missionId": "mission_1",
+      "title": "Service Fingerprint",
+      "narrative": "Recon belum selesai kalau Anda belum tahu versi service yang berjalan. Level ini mengajarkan transisi dari sekadar menemukan port ke mengidentifikasi software dan versinya, sehingga pemain paham kenapa fingerprinting selalu dilakukan sebelum exploit dipilih.",
+      "domain": "network",
+      "difficulty": 2,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 80, "y": 200 }
+          },
+          {
+            "id": "node_router",
+            "label": "Core Router",
+            "type": "router",
+            "ip": "172.16.0.1",
+            "openPorts": [22, 23, 80],
+            "services": ["SSH", "Telnet", "HTTP"],
+            "position": { "x": 300, "y": 200 }
+          },
+          {
+            "id": "node_web_server",
+            "label": "Web Server",
+            "type": "server",
+            "ip": "172.16.0.10",
+            "openPorts": [80, 443, 8080],
+            "services": ["Apache/2.4.49", "HTTPS", "Tomcat/9.0.50"],
+            "position": { "x": 520, "y": 100 }
+          },
+          {
+            "id": "node_db_server",
+            "label": "Database Server",
+            "type": "server",
+            "ip": "172.16.0.20",
+            "openPorts": [3306, 5432],
+            "services": ["MySQL/5.7.32", "PostgreSQL/12.5"],
+            "position": { "x": 520, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_router" },
+          { "sourceId": "node_router", "targetId": "node_web_server" },
+          { "sourceId": "node_router", "targetId": "node_db_server" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Fingerprint service web di 172.16.0.10 untuk mengidentifikasi versi software yang berjalan",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Identifikasi versi service database yang terlihat selama enumerasi",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Gunakan temuan versi service untuk menemukan jalur file yang menyimpan flag",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "d81bb52c11f8df6a06479f1172ffdbcaadf0d2f0082504edbc3cada827d53ec3",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Gunakan nmap -sV pada port layanan web untuk melihat nama service dan versinya."
+        },
+        {
+          "level": 2,
+          "text": "Apache/2.4.49 adalah petunjuk utama. Fokus ke enumerasi service web dulu sebelum bergerak ke database."
+        },
+        {
+          "level": 3,
+          "text": "Setelah fingerprinting, gunakan curl untuk membaca file sensitif yang terekspos oleh path traversal dan ambil flag dari file tersebut."
+        }
+      ],
+      "expectedCommandPath": [
+        "nmap -sV -p 80,443,8080 172.16.0.10",
+        "nmap -sV -p 3306,5432 172.16.0.20",
+        "curl http://172.16.0.10/cgi-bin/.%2e/%2e%2e/%2e%2e/flag.txt"
+      ],
+      "realWorldContext": "Service fingerprinting mengubah recon mentah menjadi intel yang bisa dieksekusi. Mengetahui versi service memungkinkan operator mengaitkan temuan dengan CVE dan menentukan apakah sebuah service cukup tua atau cukup rentan untuk ditindaklanjuti.",
+      "recommendedTools": ["nmap", "curl"]
+    },
+    {
+      "id": "m1_l4",
+      "missionId": "mission_1",
+      "title": "File Discovery",
+      "narrative": "Anda sudah tahu service mana yang terekspos, sekarang saatnya mencari file yang menarik. Fokus level ini adalah transisi dari enumerasi service ke enumerasi konten: direktori, backup file, dan dokumen yang sering lupa disembunyikan oleh admin.",
+      "domain": "network",
+      "difficulty": 2,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 80, "y": 200 }
+          },
+          {
+            "id": "node_ssh_server",
+            "label": "File Server",
+            "type": "server",
+            "ip": "192.168.10.50",
+            "openPorts": [22, 80, 8080],
+            "services": ["OpenSSH/7.4", "HTTP", "Backup Portal"],
+            "position": { "x": 320, "y": 200 }
+          },
+          {
+            "id": "node_internal",
+            "label": "Internal Share",
+            "type": "server",
+            "ip": "10.10.10.0/24",
+            "openPorts": [],
+            "services": ["Archived Files"],
+            "position": { "x": 540, "y": 200 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_ssh_server" },
+          { "sourceId": "node_ssh_server", "targetId": "node_internal" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Enumerasi service dan direktori yang terekspos di host 192.168.10.50",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Temukan file backup atau direktori sensitif yang bisa diakses dari service web",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Baca isi file temuan dan ambil flag dari artefak yang terbuka",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "7204d3245caa55e25d3c2b9a2b299a1c75b7be051f96ede31629104059590752",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Mulai dari port scan ringan lalu cek service web yang terlihat paling berbeda dari yang lain."
+        },
+        {
+          "level": 2,
+          "text": "Gunakan curl ke direktori atau file backup umum seperti /backup, /archive, atau /notes.txt."
+        },
+        {
+          "level": 3,
+          "text": "Jika file bisa diakses, gunakan cat atau curl untuk membaca kontennya dan cari flag di artefak backup."
+        }
+      ],
+      "expectedCommandPath": [
+        "nmap -p 22,80,8080 192.168.10.50",
+        "curl http://192.168.10.50:8080/backup/",
+        "curl http://192.168.10.50:8080/backup/notes.txt"
+      ],
+      "realWorldContext": "File discovery adalah bagian penting dari recon karena kebocoran sering berasal dari backup, arsip, dan note internal yang dibiarkan terbuka. Enumerasi konten sederhana sering memberi hasil lebih cepat daripada eksploitasi rumit.",
+      "recommendedTools": ["nmap", "curl", "cat"]
+    },
+    {
+      "id": "m1_l5",
+      "missionId": "mission_1",
+      "title": "Flag Extraction",
+      "narrative": "Ini penutup mission recon. Semua petunjuk dari host discovery, port scan, fingerprinting, dan file discovery harus dipakai untuk mengekstrak flag akhir secara bersih. Level ini mengajarkan bahwa recon yang rapi sering cukup untuk mendapatkan akses ke data penting tanpa exploit berat.",
+      "domain": "network",
+      "difficulty": 3,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 80, "y": 200 }
+          },
+          {
+            "id": "node_target",
+            "label": "Linux Server",
+            "type": "server",
+            "ip": "192.168.20.100",
+            "openPorts": [22, 80, 8080],
+            "services": ["OpenSSH/6.6", "HTTP", "HTTP-Alt"],
+            "position": { "x": 320, "y": 200 }
+          },
+          {
+            "id": "node_root",
+            "label": "Sensitive Files",
+            "type": "server",
+            "ip": "192.168.20.100",
+            "openPorts": [],
+            "services": ["File Storage"],
+            "position": { "x": 540, "y": 200 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_target" },
+          { "sourceId": "node_target", "targetId": "node_root" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Gabungkan hasil scan untuk memilih service yang paling mungkin menyimpan file flag",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Enumerasi lokasi file yang terbuka melalui service yang sudah diidentifikasi",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Ekstrak flag akhir mission dari file sensitif yang terbaca",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "85aae7dfda766063a669977c20fc006c4110312eb849c1911a9c88bf61724034",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Mulai dari enumerasi service HTTP lalu cari endpoint atau file yang terdengar seperti notes, export, atau flag."
+        },
+        {
+          "level": 2,
+          "text": "Gunakan curl untuk membaca artefak yang berhasil diakses. Level ini menutup mission recon lewat ekstraksi data, bukan shell interaktif."
+        },
+        {
+          "level": 3,
+          "text": "Tujuan akhir adalah membaca file flag, bukan mendapatkan shell root. Fokus pada ekstraksi data dari lokasi yang sudah terekspos."
+        }
+      ],
+      "expectedCommandPath": [
+        "nmap -p 22,80,8080 192.168.20.100",
+        "curl http://192.168.20.100:8080/export/",
+        "curl http://192.168.20.100:8080/export/flag.txt"
+      ],
+      "realWorldContext": "Recon yang matang sering menghasilkan data sensitif tanpa perlu eksploitasi kompleks. Banyak insiden nyata bermula dari endpoint debug, arsip ekspor, atau file teks yang tertinggal di service sekunder dan dapat dibaca langsung.",
+      "recommendedTools": ["nmap", "curl", "cat"]
+    }
+  ]
+}

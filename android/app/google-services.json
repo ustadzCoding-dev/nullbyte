@@ -1,0 +1,38 @@
+{
+  "_comment": "PLACEHOLDER - Ganti file ini dengan google-services.json asli dari Firebase Console.",
+  "_instructions": [
+    "1. Buka https://console.firebase.google.com/",
+    "2. Buat project baru atau pilih project yang sudah ada",
+    "3. Tambahkan Android app dengan package name: com.nullbytegames.nullbyte",
+    "4. Download google-services.json dan letakkan di android/app/google-services.json",
+    "5. Aktifkan Authentication (Email/Password + Anonymous) di Firebase Console",
+    "6. Aktifkan Cloud Firestore di Firebase Console"
+  ],
+  "project_info": {
+    "project_number": "000000000000",
+    "project_id": "nullbyte-placeholder",
+    "storage_bucket": "nullbyte-placeholder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "android_client_info": {
+          "package_name": "com.nullbytegames.nullbyte"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "REPLACE_WITH_YOUR_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

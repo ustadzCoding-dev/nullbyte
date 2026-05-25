@@ -1,0 +1,63 @@
+name: nullbyte
+description: "NULLBYTE - Pentest CTF Game"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  flame: ^1.35.1
+  flame_audio: ^2.11.14
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+  go_router: ^17.0.0
+  hive_flutter: ^1.1.0
+  hive: ^2.2.3
+  material_symbols_icons: ^4.2928.1
+  audio_session: ^0.2.3
+  audioplayers: ^6.6.0
+  crypto: ^3.0.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.5.4
+  hive_generator: ^2.0.1
+  riverpod_generator: ^2.6.1
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/images/logo.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/audio/bgm/
+    - assets/audio/sfx/
+    - assets/data/
+    - assets/data/levels/
+
+  fonts:
+    - family: SpaceGrotesk
+      fonts:
+        - asset: assets/fonts/SpaceGrotesk/SpaceGrotesk-VariableFont_wght.ttf
+
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono/JetBrainsMono-VariableFont_wght.ttf
+
+    - family: SpaceMono
+      fonts:
+        - asset: assets/fonts/SpaceMono/SpaceMono-Regular.ttf
+        - asset: assets/fonts/SpaceMono/SpaceMono-Bold.ttf
+          weight: 700

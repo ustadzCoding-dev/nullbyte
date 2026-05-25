@@ -1,0 +1,396 @@
+{
+  "missionId": "mission_3",
+  "missionTitle": "Privilege Escalation",
+  "domain": "network",
+  "levels": [
+    {
+      "id": "m3_l1",
+      "missionId": "mission_3",
+      "title": "Foothold Access",
+      "narrative": "Tim Anda sudah punya intel tentang host internal yang mengekspor SSH. Tugas pertama adalah mengamankan foothold yang stabil, memverifikasi akses user biasa, lalu mengambil flag awal tanpa menyentuh privilege root.",
+      "domain": "network",
+      "difficulty": 2,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_bastion",
+            "label": "Bastion Host",
+            "type": "server",
+            "ip": "192.168.100.10",
+            "openPorts": [22],
+            "services": ["OpenSSH/8.2"],
+            "position": { "x": 350, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_bastion" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Temukan layanan SSH aktif pada Bastion Host menggunakan nmap",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Login sebagai user biasa untuk mendapatkan foothold awal",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Ambil user flag dari host internal",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "bafe593bf51f154b27210d5c28ccfc27f4d29bac210726b96fe6fc567ce5f60e",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Mulai dengan scan port target untuk memastikan SSH benar-benar terbuka."
+        },
+        {
+          "level": 2,
+          "text": "Gunakan urutan sederhana: nmap 192.168.100.10 lalu ssh user@192.168.100.10."
+        },
+        {
+          "level": 3,
+          "text": "Setelah foothold aktif, cek file flag user di /home/user/flag.txt."
+        }
+      ],
+      "expectedCommandPath": [
+        "nmap 192.168.100.10",
+        "ssh user@192.168.100.10",
+        "cat /home/user/flag.txt"
+      ],
+      "realWorldContext": "Privilege escalation tidak pernah dimulai dari nol. Pada engagement nyata, operator biasanya lebih dulu mendapatkan foothold user-level, lalu melakukan verifikasi akses, enumerasi, dan stabilisasi sesi sebelum mencoba naik ke root.",
+      "recommendedTools": ["nmap", "ssh", "cat"]
+    },
+    {
+      "id": "m3_l2",
+      "missionId": "mission_3",
+      "title": "Enumeration Sweep",
+      "narrative": "Foothold sudah berhasil, tetapi Anda belum tahu seberapa jauh izin user saat ini. Saatnya enumerasi sistem: user aktif, isi /etc/passwd, jejak login, dan file penting yang bisa menjadi jalan menuju privilege escalation.",
+      "domain": "network",
+      "difficulty": 2,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_target",
+            "label": "Application Server",
+            "type": "server",
+            "ip": "192.168.100.20",
+            "openPorts": [22, 80],
+            "services": ["OpenSSH/8.2", "HTTP"],
+            "position": { "x": 350, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_target" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Enumerasi identitas user saat ini dengan whoami dan id",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Baca file sistem seperti /etc/passwd dan /var/log/auth.log untuk petunjuk",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Temukan petunjuk escalation dan ambil flag user",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "2e4a4e316451b44804c04643e0c45f329072f2b0b4041073c9b99c2316a14ec7",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Privilege escalation yang bagus selalu diawali enumerasi yang rapi."
+        },
+        {
+          "level": 2,
+          "text": "Gunakan whoami, id, cat /etc/passwd, dan cat /var/log/auth.log untuk mengumpulkan jejak akses."
+        },
+        {
+          "level": 3,
+          "text": "Perhatikan user dan jejak sudo di auth.log, lalu cek /home/user/flag.txt untuk menyelesaikan level."
+        }
+      ],
+      "expectedCommandPath": [
+        "ssh user@192.168.100.20",
+        "whoami",
+        "id",
+        "cat /etc/passwd",
+        "cat /var/log/auth.log",
+        "cat /home/user/flag.txt"
+      ],
+      "realWorldContext": "Enumeration adalah tahap paling penting setelah foothold. Banyak operator gagal bukan karena exploit kurang kuat, tetapi karena melewatkan informasi kecil seperti sudo trail, file cadangan, SUID, atau kebiasaan admin yang tercatat di log.",
+      "recommendedTools": ["ssh", "whoami", "id", "cat"]
+    },
+    {
+      "id": "m3_l3",
+      "missionId": "mission_3",
+      "title": "Sudo Misconfig",
+      "narrative": "Target menggunakan konfigurasi sudo yang longgar. Dengan enumerasi yang benar, Anda bisa menemukan binary yang diizinkan untuk dijalankan sebagai root tanpa password dan mengubahnya menjadi shell istimewa.",
+      "domain": "network",
+      "difficulty": 3,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_linux",
+            "label": "Linux Server",
+            "type": "server",
+            "ip": "192.168.100.30",
+            "openPorts": [22],
+            "services": ["OpenSSH/8.4"],
+            "position": { "x": 350, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_linux" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Cek binary yang diizinkan lewat sudo -l",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Gunakan binary yang diizinkan untuk mendapatkan shell dengan hak lebih tinggi",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Verifikasi akses root dan ambil flag istimewa",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "94bd8a58e00b03fa32f9ecec922047375bc013c5e87f3d9df0c928b60fd454fd",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Perintah sudo -l adalah pintu masuk utama untuk level ini."
+        },
+        {
+          "level": 2,
+          "text": "Jika find dapat dijalankan sebagai root, itu sering cukup untuk spawn shell."
+        },
+        {
+          "level": 3,
+          "text": "Urutan yang dicari: sudo -l lalu sudo find . -exec /bin/sh \\; -quit dan terakhir cat /root/flag.txt."
+        }
+      ],
+      "expectedCommandPath": [
+        "ssh user@192.168.100.30",
+        "sudo -l",
+        "sudo find . -exec /bin/sh \\; -quit",
+        "whoami",
+        "cat /root/flag.txt"
+      ],
+      "realWorldContext": "Misconfigured sudo adalah salah satu jalur privilege escalation Linux paling umum. Banyak admin menganggap whitelist command aman, padahal beberapa binary seperti find, vim, less, atau tar dapat dipakai untuk memecah batas privilege jika salah dikonfigurasi.",
+      "recommendedTools": ["ssh", "sudo", "find", "cat"]
+    },
+    {
+      "id": "m3_l4",
+      "missionId": "mission_3",
+      "title": "Service Pivot",
+      "narrative": "Anda sudah punya foothold pada host pertama, tetapi target penting ada di jaringan internal. Lakukan pivot ringan: identifikasi service yang dapat diakses, gunakan host yang sudah dikuasai sebagai batu loncatan, dan amankan akses ke node berikutnya.",
+      "domain": "network",
+      "difficulty": 3,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_jump",
+            "label": "Jump Host",
+            "type": "server",
+            "ip": "192.168.100.40",
+            "openPorts": [22, 8080],
+            "services": ["OpenSSH/8.2", "HTTP-Alt"],
+            "position": { "x": 300, "y": 300 }
+          },
+          {
+            "id": "node_internal",
+            "label": "Internal Service",
+            "type": "server",
+            "ip": "10.10.10.20",
+            "openPorts": [22],
+            "services": ["OpenSSH/7.9"],
+            "position": { "x": 550, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_jump" },
+          { "sourceId": "node_jump", "targetId": "node_internal" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Temukan service yang tersedia pada jump host",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Gunakan foothold untuk memetakan node internal yang tersembunyi",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Ambil flag dari service internal setelah pivot berhasil",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "ede295095565d8b748f8f548b2c6ef41eb7cd55305bf6555eb8d175cb408c64a",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Mulai dengan scan host pivot untuk melihat jalur serangan yang tersedia."
+        },
+        {
+          "level": 2,
+          "text": "Setelah foothold ke jump host aktif, scan node internal yang ditemukan lalu lanjutkan akses dengan SSH."
+        },
+        {
+          "level": 3,
+          "text": "Jalur ringan yang dicari tetap sama: nmap ke jump host, ssh ke host internal, lalu baca user flag."
+        }
+      ],
+      "expectedCommandPath": [
+        "nmap 192.168.100.40",
+        "ssh user@192.168.100.40",
+        "nmap 10.10.10.20",
+        "ssh user@10.10.10.20",
+        "cat /home/user/flag.txt"
+      ],
+      "realWorldContext": "Pivoting adalah kemampuan penting dalam post-exploitation. Operator memanfaatkan sistem yang sudah dikuasai sebagai batu loncatan untuk menjangkau segmen yang sebelumnya tidak terlihat. Inilah mengapa segmentasi jaringan dan kontrol lateral movement sangat krusial.",
+      "recommendedTools": ["nmap", "ssh", "cat"]
+    },
+    {
+      "id": "m3_l5",
+      "missionId": "mission_3",
+      "title": "Root Access",
+      "narrative": "Final mission. Semua petunjuk sudah terkumpul: foothold, enumerasi, dan jalur escalation. Sekarang gabungkan semuanya untuk mendapatkan shell root yang stabil dan mengambil flag terakhir.",
+      "domain": "network",
+      "difficulty": 4,
+      "topology": {
+        "nodes": [
+          {
+            "id": "node_attacker",
+            "label": "Kali Linux",
+            "type": "workstation",
+            "ip": "10.0.0.5",
+            "openPorts": [],
+            "services": [],
+            "position": { "x": 50, "y": 300 }
+          },
+          {
+            "id": "node_target",
+            "label": "Production Server",
+            "type": "server",
+            "ip": "192.168.120.1",
+            "openPorts": [22, 80, 443],
+            "services": ["OpenSSH/8.9", "HTTP", "HTTPS"],
+            "position": { "x": 300, "y": 300 }
+          },
+          {
+            "id": "node_root",
+            "label": "Root Shell",
+            "type": "server",
+            "ip": "192.168.120.1",
+            "openPorts": [],
+            "services": ["Root Access"],
+            "position": { "x": 550, "y": 300 }
+          }
+        ],
+        "connections": [
+          { "sourceId": "node_attacker", "targetId": "node_target" },
+          { "sourceId": "node_target", "targetId": "node_root" }
+        ]
+      },
+      "objectives": [
+        {
+          "id": "obj_1",
+          "description": "Amankan akses awal ke production server",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_2",
+          "description": "Naikkan privilege hingga mendapatkan shell root",
+          "isCompleted": false
+        },
+        {
+          "id": "obj_3",
+          "description": "Baca flag istimewa untuk menyelesaikan operasi",
+          "isCompleted": false
+        }
+      ],
+      "flagHash": "eb31beb8edc5441dd3a33ba7273b29de87937eeeeda2027bef2f20034eedbe9e",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Jangan lompat ke exploit. Verifikasi foothold lebih dulu, lalu cek izin sudo."
+        },
+        {
+          "level": 2,
+          "text": "Setelah akses user aktif, cek sudo -l lalu fokus ke binary yang bisa dipakai untuk spawn shell root."
+        },
+        {
+          "level": 3,
+          "text": "Urutan final: ssh, sudo -l, sudo find . -exec /bin/sh \\; -quit, whoami, lalu cat /root/flag.txt."
+        }
+      ],
+      "expectedCommandPath": [
+        "ssh operator@192.168.120.1",
+        "sudo -l",
+        "sudo find . -exec /bin/sh \\; -quit",
+        "whoami",
+        "cat /root/flag.txt"
+      ],
+      "realWorldContext": "Level ini merepresentasikan pola engagement nyata: foothold -> enumeration -> privilege escalation -> objective capture. Operator yang baik bukan hanya bisa memperoleh root, tetapi juga memahami mengapa jalur escalation itu berhasil dan bagaimana defender seharusnya menutupnya.",
+      "recommendedTools": ["ssh", "sudo", "find", "cat"]
+    }
+  ]
+}
