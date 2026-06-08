@@ -5,6 +5,7 @@ import 'package:nullbyte/core/constants/app_constants.dart';
 import 'package:nullbyte/features/active_session/domain/star_rating.dart';
 import 'package:nullbyte/features/active_session/providers/game_session_provider.dart';
 import 'package:nullbyte/features/mission/providers/mission_provider.dart';
+import 'package:nullbyte/features/save/providers/hive_repository_provider.dart';
 import 'package:nullbyte/shared/models/level_definition.dart';
 import 'package:nullbyte/shared/providers/audio_manager.dart';
 import 'package:nullbyte/shared/widgets/scanline_overlay.dart';
@@ -801,12 +802,19 @@ class _ActionButtons extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         OutlinedButton(
-          onPressed: () {
+          onPressed: () async {
             // BUG-10 FIX: reset session state dan level context sebelum replay dimulai
             // agar isCompleted/finalScore dan peta node lama tidak bocor ke sesi baru.
             ref.invalidate(gameSessionProvider);
             ref.invalidate(levelContextProvider);
-            context.go('/session/$levelId');
+            
+            // Tambahan FIX: Hapus sesi tersimpan di Hive (offline DB) agar layar 
+            // ActiveSessionScreen tidak me-load state 'isCompleted' kembali secara otomatis.
+            await ref.read(hiveRepositoryProvider).clearSessionState(levelId);
+            
+            if (context.mounted) {
+              context.go('/session/$levelId');
+            }
           },
           style: OutlinedButton.styleFrom(
             foregroundColor: AppConstants.colorPrimary,

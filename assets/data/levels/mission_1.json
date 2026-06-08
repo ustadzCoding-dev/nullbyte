@@ -7,7 +7,7 @@
       "id": "m1_l1",
       "missionId": "mission_1",
       "title": "Host Discovery",
-      "narrative": "Mission pembuka dimulai di sini. Anda baru masuk ke lab target dan tugas pertama adalah memetakan host yang benar-benar hidup di subnet 192.168.1.0/24. Fokus level ini sederhana: pahami alur ping sweep, identifikasi target utama, lalu ambil flag awal dari service web yang terbuka.",
+      "narrative": "[SECURE LINK ESTABLISHED] Selamat datang, Operative. Kami telah memberi Anda akses ke pinggiran jaringan CorpNet. Intel kita menunjukkan ada sebuah server yang menyembunyikan data sensitif di subnet 192.168.1.0/24, tapi kita tidak tahu IP pastinya. Lakukan sapuan jaringan (ping sweep) secara senyap, identifikasi target utama, dan ambil file yang tertinggal di permukaan.",
       "domain": "network",
       "difficulty": 1,
       "topology": {
@@ -89,7 +89,7 @@
       "id": "m1_l2",
       "missionId": "mission_1",
       "title": "Port Scan",
-      "narrative": "Setelah mengetahui host yang aktif, Anda perlu memetakan port terbuka pada workstation yang tampak tidak biasa. Fokus level ini adalah mengenali layanan di port non-standar dan memastikan jalur masuk yang paling menarik untuk tahap berikutnya.",
+      "narrative": "[HANDLER MESSAGE] Kerja bagus. Target utama telah dikonfirmasi. Namun, firewall target cukup tebal. Kita perlu mencari pintu belakang. Pindai seluruh port pada workstation yang mencurigakan, fokus pada layanan di port non-standar yang mungkin sengaja disembunyikan oleh admin mereka.",
       "domain": "network",
       "difficulty": 1,
       "topology": {
@@ -181,7 +181,7 @@
       "id": "m1_l3",
       "missionId": "mission_1",
       "title": "Service Fingerprint",
-      "narrative": "Recon belum selesai kalau Anda belum tahu versi service yang berjalan. Level ini mengajarkan transisi dari sekadar menemukan port ke mengidentifikasi software dan versinya, sehingga pemain paham kenapa fingerprinting selalu dilakukan sebelum exploit dipilih.",
+      "narrative": "[AI CORE ALERT] Operative, menemukan pintu yang terbuka saja tidak cukup. Anda harus tahu kunci apa yang pas untuk membukanya. Identifikasi perangkat lunak dan versi spesifik yang berjalan di balik port tersebut (Service Fingerprinting). Temukan sistem yang paling usang, dan ekstrak data dari sana.",
       "domain": "network",
       "difficulty": 2,
       "topology": {
@@ -273,7 +273,7 @@
       "id": "m1_l4",
       "missionId": "mission_1",
       "title": "File Discovery",
-      "narrative": "Anda sudah tahu service mana yang terekspos, sekarang saatnya mencari file yang menarik. Fokus level ini adalah transisi dari enumerasi service ke enumerasi konten: direktori, backup file, dan dokumen yang sering lupa disembunyikan oleh admin.",
+      "narrative": "[SECURE COMMS] Terkadang, serangan paling mematikan bukanlah exploit yang rumit, melainkan kelalaian target. Intel menduga admin CorpNet sering meninggalkan file cadangan (backup) di direktori publik. Sisir direktori web mereka dan cari dokumen yang bisa memberi kita keuntungan taktis.",
       "domain": "network",
       "difficulty": 2,
       "topology": {
@@ -346,7 +346,8 @@
       "expectedCommandPath": [
         "nmap -p 22,80,8080 192.168.10.50",
         "curl http://192.168.10.50:8080/backup/",
-        "curl http://192.168.10.50:8080/backup/notes.txt"
+        "curl http://192.168.10.50:8080/backup/notes.txt",
+        "curl http://192.168.10.50:8080/backup/flag.txt"
       ],
       "realWorldContext": "File discovery adalah bagian penting dari recon karena kebocoran sering berasal dari backup, arsip, dan note internal yang dibiarkan terbuka. Enumerasi konten sederhana sering memberi hasil lebih cepat daripada eksploitasi rumit.",
       "recommendedTools": ["nmap", "curl", "cat"]
@@ -355,7 +356,7 @@
       "id": "m1_l5",
       "missionId": "mission_1",
       "title": "Flag Extraction",
-      "narrative": "Ini penutup mission recon. Semua petunjuk dari host discovery, port scan, fingerprinting, dan file discovery harus dipakai untuk mengekstrak flag akhir secara bersih. Level ini mengajarkan bahwa recon yang rapi sering cukup untuk mendapatkan akses ke data penting tanpa exploit berat.",
+      "narrative": "[DIRECTIVE UPDATE] Ini adalah tahap akhir operasi pengintaian. Kumpulkan semua intelijen yang telah Anda dapatkan: IP target, port terbuka, versi layanan, dan jejak file. Target kita menyimpan arsip rahasia (Flag) di peladen produksi. Buktikan bahwa infiltrasi bersih (tanpa exploit paksa) bisa membawa hasil maksimal. Ekstrak file tersebut.",
       "domain": "network",
       "difficulty": 3,
       "topology": {

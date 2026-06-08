@@ -11,13 +11,12 @@ import 'package:nullbyte/shared/providers/audio_manager.dart';
 
 /// Tampilkan modal bottom sheet untuk submit flag.
 void showFlagSubmissionModal(BuildContext context, WidgetRef ref) {
-  showModalBottomSheet(
+  showDialog(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: AppTheme.surfaceContainerLow,
-    shape: const RoundedRectangleBorder(),
-    builder: (ctx) => Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+    builder: (ctx) => Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.all(20),
       child: _FlagSubmissionSheet(parentRef: ref),
     ),
   );
@@ -118,11 +117,9 @@ class _FlagSubmissionSheetState extends ConsumerState<_FlagSubmissionSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppTheme.surfaceContainerLow,
-        border: Border(
-          top: BorderSide(color: AppTheme.primaryContainer, width: 2),
-        ),
+        border: Border.all(color: AppTheme.primaryContainer, width: 2),
       ),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
       child: _showSuccess ? _buildSuccess() : _buildForm(),
